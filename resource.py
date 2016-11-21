@@ -1,0 +1,90 @@
+import pygame
+
+pygame.init()
+
+GREEN    = (   0, 255,  31 )
+RED      = (  255,  0,   0 )
+BLUE     = (    0,  0, 255 )
+DARKBLUE = (    7,  0,  63 )
+LIGHTBLUE= (  130, 255, 252)
+YELLOW   = ( 245, 255,  68 )
+
+screen_size = (700, 500)
+screen = pygame.display.set_mode(screen_size)
+
+pygame.display.set_caption("HaYa")
+
+class Rocket(pygame.sprite.Sprite):
+
+    health = 10
+    change_x = 0
+    score = 0
+    ammo = 10
+
+    def __init__(self, filename, x, y):
+
+        pygame.sprite.Sprite.__init__(self)
+
+        self.image = pygame.image.load(filename).convert()
+        self.image.set_colorkey(YELLOW)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def healthBar(self):
+        pygame.draw.rect(screen, RED, [self.rect.x + 5, self.rect.y + 90, 50, 5])
+        if self.health >= 0:
+            pygame.draw.rect(screen, GREEN, [self.rect.x + 5, self.rect.y + 90, 5 * self.health, 5])
+
+    def loseHealth(self, hit):
+        self.health -= hit
+
+    def shotsFired(self):
+        pygame.draw.rect(screen, RED, [self.rect.x + 5, self.rect.y + 100, 50, 5])
+        if self.ammo >= 0:
+            pygame.draw.rect(screen, LIGHTBLUE, [self.rect.x + 5, self.rect.y + 100, 5 * self.ammo, 5])
+
+    def move(self, movement_x):
+        self.change_x += movement_x
+
+    def update(self):
+
+        # Rocket movement and x_axis limiting
+        self.rect.x += self.change_x
+        if self.rect.x <= 55:
+            self.rect.x = 55
+        if self.rect.x >= 585:
+            self.rect.x = 585
+
+
+class Candle(pygame.sprite.Sprite):
+
+    def __init__(self, filename, x, y):
+
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(filename).convert()
+        self.image.set_colorkey(YELLOW)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def update(self):
+        self.rect.y -= 3
+
+
+class Siri(pygame.sprite.Sprite):
+
+    def __init__(self, filename, speed):
+
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(filename).convert()
+        self.image.set_colorkey(YELLOW)
+
+        self.rect = self.image.get_rect()
+        self.speed_siri = speed
+
+    def update(self):
+        self.rect.y += self.speed_siri
+
